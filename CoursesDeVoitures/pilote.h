@@ -3,25 +3,10 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include "general-autre.h"
+    #include "fichier.h"
 #endif
 
-
-#define FICBINAIREPILOTES "Fichiers_binaires\\Pilotes.bin"
-
-
-typedef struct Date{
-    int jour;
-    int mois;
-    int annee;
-}Date;
-
-typedef struct Pilotes{
-    char nom[15];
-    char prenom[25];
-    int nbrPodium;
-    Date dateNaissance;
-    int age;
-}Pilotes;
 
 
 void ajouterPilotes();

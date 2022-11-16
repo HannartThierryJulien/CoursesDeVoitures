@@ -1,7 +1,8 @@
 #include "circuit.h"
 
 
-FILE * fichierCircuits = NULL;
+FILE * fichierCircuits;
+
 
 
 void ajouterCircuits(){
@@ -213,10 +214,10 @@ void modifierCircuits(Circuits *pt_circuit, int *pt_nbrCircuits){
     if(choix){
         afficherCircuits(pt_circuit, pt_nbrCircuits);
     }
-    printf("------------------------------------------------\n");
+    printf("\n------------------------------------------------\n");
 
 
-    printf("\n\nEntrez le nom du circuit que vous voulez modifier : ");
+    printf("\nEntrez le nom du circuit que vous voulez modifier : ");
     fflush(stdin);
     scanf("%s", nom);
 

@@ -1,6 +1,7 @@
 #include "pilote.h"
 
-FILE * fichierPilotes = NULL;
+
+FILE * fichierPilotes;
 
 
 
@@ -8,7 +9,7 @@ void ajouterPilotes(){
    system("cls");
     printf("\n\n");
 
-    int nbrPilotesAAjouter, i;
+    int nbrPilotesAAjouter, i, jour, mois, annee;
     Pilotes * pilote = NULL;
 
     printf("Combien de pilotes voulez vous ajouter ? ");
@@ -39,13 +40,16 @@ void ajouterPilotes(){
                 printf("   Date de naissance ? ");
                     printf("\n      Jour : ");
                     fflush(stdin);
-                    scanf("%d", &pilote[i].dateNaissance.jour);
+                    scanf("%d", &jour);
                     printf("      Mois : ");
                     fflush(stdin);
-                    scanf(" %d", &pilote[i].dateNaissance.mois);
+                    scanf(" %d", &mois);
                     printf("      Annee : ");
                     fflush(stdin);
-                    scanf(" %d", &pilote[i].dateNaissance.annee);
+                    scanf(" %d", &annee);
+                pilote[i].nbrDateNaissance=calculNbrDate(jour, mois, annee);
+
+                pilote[i].nn=calculerNumeroNationalFaitMaison(pilote[i].nom, pilote[i].prenom, pilote[i].nbrDateNaissance);
 
                 fwrite (&pilote[i], 1, sizeof(Pilotes), fichierPilotes );
             }
@@ -61,15 +65,17 @@ void afficherPilotes(Pilotes *pt_pilote, int *pt_nbrPilotes){
     system("cls");
     printf("\n\n");
 
+    int tabDateNaissance[3];
     int i;
 
     printf("Nombre de pilotes : %d\n\n", *pt_nbrPilotes);
 
     for (i=0; i<*pt_nbrPilotes; i++){
-        printf("Nom : %s \n", pt_pilote[i].nom);
-        printf("Prenom : %s \n", pt_pilote[i].prenom);
-        printf("Nombre de podium obtenu(s) : %d \n", pt_pilote[i].nbrPodium);
-        printf("Date de naissance %d/%d/%d\n\n", pt_pilote[i].dateNaissance.jour, pt_pilote[i].dateNaissance.mois, pt_pilote[i].dateNaissance.annee);
+        printf("%s %s\n", pt_pilote[i].nom, pt_pilote[i].prenom);
+        printf("%d podium(s)\n", pt_pilote[i].nbrPodium);
+        DateEntiere(tabDateNaissance, pt_pilote[i].nbrDateNaissance);
+        printf("Ne le : %d/%d/%d\n\n", tabDateNaissance[0], tabDateNaissance[1], tabDateNaissance[2]);
+        //printf("nn home made : %li \n", pt_pilote[i].nn);
     }
 }
 
@@ -80,7 +86,7 @@ void trierPilotes(Pilotes *pt_pilote, int *pt_nbrPilotes){
     system("cls");
     printf("\n\n");
 
-    int i, j, choix, jourActuel, moisActuel, anneeActuelle;
+    int i, j, choix;
 
     do{
         printf("Trier les pilotes par\n");
@@ -95,22 +101,9 @@ void trierPilotes(Pilotes *pt_pilote, int *pt_nbrPilotes){
 
     switch (choix){
         case 1:
-            printf("Entrez la date du jour (ex : 21 06 2021) : ");
-            fflush(stdin);
-            scanf("%d %d %d", &jourActuel, &moisActuel, &anneeActuelle);
-
-            for(i=0; i<*pt_nbrPilotes; i++){
-                pt_pilote[i].age=anneeActuelle-pt_pilote[i].dateNaissance.annee;
-                if(moisActuel<=pt_pilote[i].dateNaissance.mois){
-                    if(jourActuel<pt_pilote[i].dateNaissance.jour){
-                        --pt_pilote[i].age;
-                    }
-                }
-            }
-
             for(i=0;i<*pt_nbrPilotes-1;i++){
                 for(j=i+1;j<*pt_nbrPilotes;j++){
-                    if( pt_pilote[i].age > pt_pilote[j].age){
+                    if( pt_pilote[i].nbrDateNaissance < pt_pilote[j].nbrDateNaissance){
                         echangerPilotes(&pt_pilote[i], &pt_pilote[j]);
                     }
                 }
@@ -242,7 +235,7 @@ void modifierPilotes(Pilotes *pt_pilote, int *pt_nbrPilotes){
     printf("\n\n");
 
 
-    int choix, i, resultatRecherche=0;
+    int choix, i, resultatRecherche=0, jour, mois, annee;
     char nom[15], prenom[25];
 
 
@@ -275,16 +268,17 @@ void modifierPilotes(Pilotes *pt_pilote, int *pt_nbrPilotes){
             printf("   Nombre de podium obtenu(s) (3 premiers) ? ");
             fflush(stdin);
             scanf("%d", &pt_pilote[i].nbrPodium);
-                printf("   Date de naissance ? ");
+            printf("   Date de naissance ? ");
                 printf("\n      Jour : ");
                 fflush(stdin);
-                scanf("%d", &pt_pilote[i].dateNaissance.jour);
+                scanf("%d", &jour);
                 printf("      Mois : ");
                 fflush(stdin);
-                scanf(" %d", &pt_pilote[i].dateNaissance.mois);
+                scanf(" %d", &mois);
                 printf("      Annee : ");
                 fflush(stdin);
-                scanf(" %d", &pt_pilote[i].dateNaissance.annee);
+                scanf(" %d", &annee);
+                pt_pilote[i].nbrDateNaissance=calculNbrDate(jour, mois, annee);
 
             ++resultatRecherche;
         }

@@ -39,6 +39,14 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="course.h" />
+		<Unit filename="fichier.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="fichier.h" />
+		<Unit filename="general-autre.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="general-autre.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

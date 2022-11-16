@@ -1,7 +1,7 @@
 #include "voiture.h"
 
 
-FILE * fichierVoitures = NULL;
+FILE * fichierVoitures;
 
 
 
@@ -59,7 +59,7 @@ void ajouterVoitures(Pilotes *pt_pilote, int *pt_nbrPilotes){
                     scanf("%s", prenomPilote);
                     for (k=0; k<*pt_nbrPilotes; k++){
                         if(strcmp(nomPilote, pt_pilote[k].nom) == 0 && strcmp(prenomPilote, pt_pilote[k].prenom) == 0){
-                            voiture[i].pilote[j]=pt_pilote[k];
+                            voiture[i].pilote[j]=pt_pilote[k].nn;
                         }
                     }
                 }
@@ -74,12 +74,12 @@ void ajouterVoitures(Pilotes *pt_pilote, int *pt_nbrPilotes){
 
 
 
-void afficherVoitures(Voitures *pt_voiture, int *pt_nbrVoitures){
+void afficherVoitures(Voitures *pt_voiture, int *pt_nbrVoitures, Pilotes *pt_pilote, int *pt_nbrPilotes){
 
     system("cls");
     printf("\n\n");
 
-    int i, j;
+    int i, j, k;
 
     printf("Nombre de voitures : %d\n\n", *pt_nbrVoitures);
 
@@ -88,7 +88,12 @@ void afficherVoitures(Voitures *pt_voiture, int *pt_nbrVoitures){
         printf("Marque : %s \n", pt_voiture[i].marque);
         printf("Puissance : %d \n", pt_voiture[i].puissance);
         for (j=0; j<2; j++){
-            printf("Pilote %d : %s %s\n", j+1, pt_voiture[i].pilote[j].nom, pt_voiture[i].pilote[j].prenom);
+            //afficherPilotesVoitures(&pt_voiture[i].pilote[j], *pt_pilote, &pt_nbrPilotes);
+            for (k=0; k<*pt_nbrPilotes; k++){
+                if(pt_voiture[i].pilote[j]==pt_pilote[k].nn){
+                    printf("Pilote %d : %s %s\n", j+1, pt_pilote[k].nom, pt_pilote[k].prenom);
+                }
+            }
         }
     }
 }
@@ -134,7 +139,7 @@ void trierVoitures(Voitures *pt_voiture, int *pt_nbrVoitures){
         case 3:
             for(i=0;i<*pt_nbrVoitures-1;i++){
                 for(j=i+1;j<*pt_nbrVoitures;j++){
-                    if(strcmp(pt_voiture[i].marque, pt_voiture[i].marque) > 0){
+                    if(strcmp(pt_voiture[i].marque, pt_voiture[j].marque) > 0){
                         echangerVoitures(&pt_voiture[i], &pt_voiture[j]);
                     }
                 }
@@ -159,12 +164,12 @@ void echangerVoitures(Voitures *voiture1, Voitures *voiture2){
 
 
 
-void rechercherVoitures(Voitures *pt_voiture, int *pt_nbrVoitures){
+void rechercherVoitures(Voitures *pt_voiture, int *pt_nbrVoitures, Pilotes *pt_pilote, int *pt_nbrPilotes){
 
     system("cls");
     printf("\n\n");
 
-    int choix, i, j, resultatRecherche=0;
+    int choix, i, j, k, resultatRecherche=0;
     char nomOuPrenom[25], marque[15];
     Voitures * temp_voiture = NULL;
 
@@ -185,8 +190,12 @@ void rechercherVoitures(Voitures *pt_voiture, int *pt_nbrVoitures){
 
             for (i=0; i<*pt_nbrVoitures; i++){
                 for (j=0; j<2; j++){
-                    if(strcmp(nomOuPrenom, pt_voiture[i].pilote[j].nom) == 0 || strcmp(nomOuPrenom, pt_voiture[i].pilote[j].prenom) == 0){
-                        ++resultatRecherche;
+                    for (k=0; k<*pt_nbrPilotes; k++){
+                        if(pt_voiture[i].pilote[j]==pt_pilote[k].nn){
+                            if(strcmp(nomOuPrenom, pt_pilote[k].nom) == 0 || strcmp(nomOuPrenom, pt_pilote[k].prenom)){
+                                ++resultatRecherche;
+                            }
+                        }
                     }
                 }
             }
@@ -196,9 +205,13 @@ void rechercherVoitures(Voitures *pt_voiture, int *pt_nbrVoitures){
 
             for (i=0; i<*pt_nbrVoitures; i++){
                 for (j=0; j<2; j++){
-                    if(strcmp(nomOuPrenom, pt_voiture[i].pilote[j].nom) == 0 || strcmp(nomOuPrenom, pt_voiture[i].pilote[j].prenom) == 0){
-                        ++resultatRecherche;
-                        temp_voiture[resultatRecherche-1]=pt_voiture[i];
+                    for (k=0; k<*pt_nbrPilotes; k++){
+                        if(pt_voiture[i].pilote[j]==pt_pilote[k].nn){
+                            if(strcmp(nomOuPrenom, pt_pilote[k].nom) == 0 || strcmp(nomOuPrenom, pt_pilote[k].prenom) == 0){
+                                ++resultatRecherche;
+                                temp_voiture[resultatRecherche-1]=pt_voiture[i];
+                            }
+                        }
                     }
                 }
             }
@@ -229,7 +242,7 @@ void rechercherVoitures(Voitures *pt_voiture, int *pt_nbrVoitures){
     }
 
     if(resultatRecherche!=0){
-        afficherVoitures(temp_voiture, &resultatRecherche);
+        afficherVoitures(temp_voiture, &resultatRecherche, pt_pilote, pt_nbrPilotes);
     }
     else{
         printf("\nAucune voiture correspondante n a ete trouvee.\n");
@@ -254,7 +267,7 @@ void modifierVoitures(Voitures *pt_voiture, int *pt_nbrVoitures, Pilotes *pt_pil
     fflush(stdin);
     scanf("%d", &choix);
     if(choix){
-        afficherVoitures(pt_voiture, pt_nbrVoitures);
+        afficherVoitures(pt_voiture, pt_nbrVoitures, pt_pilote, pt_nbrPilotes);
     }
     printf("------------------------------------------------\n");
 
@@ -286,7 +299,7 @@ void modifierVoitures(Voitures *pt_voiture, int *pt_nbrVoitures, Pilotes *pt_pil
                     scanf("%s", prenomPilote);
                     for (k=0; k<*pt_nbrPilotes; k++){
                         if(strcmp(nomPilote, pt_pilote[k].nom) == 0 && strcmp(prenomPilote, pt_pilote[k].prenom) == 0){
-                            pt_voiture[i].pilote[j]=pt_pilote[k];
+                            pt_voiture[i].pilote[j]=pt_pilote[k].nn;
                         }
                     }
                 }

@@ -27,19 +27,15 @@ void menuPrincipal(){
     switch (choixMenuPrincipal){
         case 1:
             menuPilote();
-            reAfficherMenuPrincipal();
             break;
         case 2:
             menuVoiture();
-            reAfficherMenuPrincipal();
             break;
         case 3:
             menuCircuit();
-            reAfficherMenuPrincipal();
             break;
         case 4:
             menuCourse();
-            reAfficherMenuPrincipal();
             break;
         default:
             break;
@@ -66,8 +62,7 @@ void reAfficherMenuPrincipal(){
 
 void menuPilote(){
 
-    FILE * fichierPilotes = NULL;
-    int choixMenuPilote, nbrPilotes, i;
+    int choixMenuPilote, nbrPilotes;
     Pilotes * pilote = NULL;
 
 
@@ -93,26 +88,7 @@ void menuPilote(){
 
 
     if(choixMenuPilote != 1 && choixMenuPilote != 6){
-        fichierPilotes = fopen(FICBINAIREPILOTES, "rb") ;
-        if (fichierPilotes==NULL){
-            system("cls");
-            printf("%s", strerror(errno));
-            printf("\n\n !!! PAS DE FICHIER PILOTES DETECTES !!! \n\n");
-            printf(" ! Veuillez ajouter des pilotes avant de continuer ! \n\n\n");
-            system("PAUSE");
-        }
-        else{
-            fseek(fichierPilotes, 0, SEEK_END);
-                nbrPilotes=ftell(fichierPilotes) / sizeof(Pilotes);
-
-            pilote=malloc(nbrPilotes*(sizeof(Pilotes)));
-
-            fseek(fichierPilotes, 0, SEEK_SET);
-                for (i=0; i<nbrPilotes; i++){
-                    fread(&pilote[i],sizeof(Pilotes),1,fichierPilotes);
-                }
-            fclose(fichierPilotes);
-        }
+        pilote=lectureFichierPilotes(&nbrPilotes);
     }
 
 
@@ -139,15 +115,14 @@ void menuPilote(){
 
 
     free(pilote);
+    if(choixMenuPilote!=6) reAfficherMenuPrincipal();
 }
 
 
 
 void menuVoiture(){
 
-    FILE * fichierPilotes = NULL;
-    FILE * fichierVoitures = NULL;
-    int choixMenuVoiture, nbrVoitures, nbrPilotes, i;
+    int choixMenuVoiture, nbrVoitures, nbrPilotes;
     Voitures * voiture= NULL;
     Pilotes * pilote = NULL;
 
@@ -173,51 +148,13 @@ void menuVoiture(){
     }while (choixMenuVoiture < 1 || choixMenuVoiture > 6);
 
 
-    if(choixMenuVoiture == 1 || choixMenuVoiture == 5){
-        fichierPilotes = fopen(FICBINAIREPILOTES, "rb") ;
-        if (fichierPilotes==NULL){
-            system("cls");
-            printf("%s", strerror(errno));
-            printf("\n\n !!! PAS DE FICHIER PILOTES DETECTES !!! \n\n");
-            printf(" ! Veuillez ajouter des pilotes avant de continuer ! \n\n\n");
-            system("PAUSE");
-        }
-        else{
-            fseek(fichierPilotes, 0, SEEK_END);
-                nbrPilotes=ftell(fichierPilotes) / sizeof(Pilotes);
-
-            pilote=malloc(nbrPilotes*(sizeof(Pilotes)));
-
-            fseek(fichierPilotes, 0, SEEK_SET);
-                for (i=0; i<nbrPilotes; i++){
-                    fread(&pilote[i],sizeof(Pilotes),1,fichierPilotes);
-                }
-            fclose(fichierPilotes);
-        }
+    if(choixMenuVoiture != 3){
+        pilote=lectureFichierPilotes(&nbrPilotes);
     }
 
 
     if(choixMenuVoiture != 1 && choixMenuVoiture != 6){
-        fichierVoitures = fopen(FICBINAIREVOITURES, "rb") ;
-        if (fichierVoitures==NULL){
-            system("cls");
-            printf("%s", strerror(errno));
-            printf("\n\n !!! PAS DE FICHIER VOITURES DETECTES !!! \n\n");
-            printf(" ! Veuillez ajouter des voitures avant de continuer ! \n\n\n");
-            system("PAUSE");
-        }
-        else{
-            fseek(fichierVoitures, 0, SEEK_END);
-                nbrVoitures=ftell(fichierVoitures) / sizeof(Voitures);
-
-            voiture=malloc(nbrVoitures*(sizeof(Voitures)));
-
-            fseek(fichierVoitures, 0, SEEK_SET);
-                for (i=0; i<nbrVoitures; i++){
-                    fread(&voiture[i],sizeof(Voitures),1,fichierVoitures);
-                }
-            fclose(fichierVoitures);
-        }
+        voiture=lectureFichierVoitures(&nbrVoitures);
     }
 
 
@@ -226,14 +163,14 @@ void menuVoiture(){
             ajouterVoitures(pilote, &nbrPilotes);
             break;
         case 2:
-            afficherVoitures(voiture, &nbrVoitures);
+            afficherVoitures(voiture, &nbrVoitures, pilote, &nbrPilotes);
             break;
         case 3:
             trierVoitures(voiture, &nbrVoitures);
-            afficherVoitures(voiture, &nbrVoitures);
+            afficherVoitures(voiture, &nbrVoitures, pilote, &nbrPilotes);
             break;
         case 4:
-            rechercherVoitures(voiture, &nbrVoitures);
+            rechercherVoitures(voiture, &nbrVoitures, pilote, &nbrPilotes);
             break;
         case 5:
             modifierVoitures(voiture, &nbrVoitures, pilote, &nbrPilotes);
@@ -245,14 +182,14 @@ void menuVoiture(){
 
     free(pilote);
     free(voiture);
+    if(choixMenuVoiture!=6) reAfficherMenuPrincipal();
 }
 
 
 
 void menuCircuit(){
 
-    FILE * fichierCircuits = NULL;
-    int choixMenuCircuit, nbrCircuits, i;
+    int choixMenuCircuit, nbrCircuits;
     Circuits * circuit = NULL;
 
 
@@ -278,26 +215,7 @@ void menuCircuit(){
 
 
     if(choixMenuCircuit != 1 && choixMenuCircuit != 6){
-        fichierCircuits = fopen(FICBINAIRECIRCUITS, "rb") ;
-        if (fichierCircuits==NULL){
-            system("cls");
-            printf("%s", strerror(errno));
-            printf("\n\n !!! PAS DE FICHIER CIRCUITS DETECTES !!! \n\n");
-            printf(" ! Veuillez ajouter des circuits avant de continuer ! \n\n\n");
-            system("PAUSE");
-        }
-        else{
-            fseek(fichierCircuits, 0, SEEK_END);
-                nbrCircuits=ftell(fichierCircuits) / sizeof(Circuits);
-
-            circuit=malloc(nbrCircuits*(sizeof(Circuits)));
-
-            fseek(fichierCircuits, 0, SEEK_SET);
-                for (i=0; i<nbrCircuits; i++){
-                    fread(&circuit[i],sizeof(Circuits),1,fichierCircuits);
-                }
-            fclose(fichierCircuits);
-        }
+        circuit=lectureFichierCircuits(&nbrCircuits);
     }
 
 
@@ -324,17 +242,17 @@ void menuCircuit(){
 
 
     free(circuit);
+    if(choixMenuCircuit!=6) reAfficherMenuPrincipal();
 }
 
 
 
 void menuCourse(){
 
-    FILE * fichierCourses = NULL;
-    FILE * fichierVoitures = NULL;
-    int choixMenuCourse, nbrCourses, nbrVoitures, i;
+    int choixMenuCourse, nbrCourses, nbrVoitures, nbrPilotes;
     Courses * course = NULL;
     Voitures * voiture= NULL;
+    Pilotes * pilote = NULL;
 
 
     do{
@@ -357,66 +275,31 @@ void menuCourse(){
     }while (choixMenuCourse < 1 || choixMenuCourse > 5);
 
 
+    pilote=lectureFichierPilotes(&nbrPilotes);
+
+
     if(choixMenuCourse == 1 || choixMenuCourse == 4){
-        fichierVoitures = fopen(FICBINAIREVOITURES, "rb") ;
-        if (fichierVoitures==NULL){
-            system("cls");
-            printf("%s", strerror(errno));
-            printf("\n\n !!! PAS DE FICHIER VOITURES DETECTES !!! \n\n");
-            printf(" ! Veuillez ajouter des voitures avant de continuer ! \n\n\n");
-            system("PAUSE");
-        }
-        else{
-            fseek(fichierVoitures, 0, SEEK_END);
-                nbrVoitures=ftell(fichierVoitures) / sizeof(Voitures);
-
-            voiture=malloc(nbrVoitures*(sizeof(Voitures)));
-
-            fseek(fichierVoitures, 0, SEEK_SET);
-                for (i=0; i<nbrVoitures; i++){
-                    fread(&voiture[i],sizeof(Voitures),1,fichierVoitures);
-                }
-            fclose(fichierVoitures);
-        }
+        voiture=lectureFichierVoitures(&nbrVoitures);
     }
 
 
     if(choixMenuCourse != 1 && choixMenuCourse != 6){
-        fichierCourses = fopen(FICBINAIRECOURSES, "rb") ;
-        if (fichierCourses==NULL){
-            system("cls");
-            printf("%s", strerror(errno));
-            printf("\n\n !!! PAS DE FICHIER COURSES DETECTES !!! \n\n");
-            printf(" ! Veuillez ajouter des courses avant de continuer ! \n\n\n");
-            system("PAUSE");
-        }
-        else{
-            fseek(fichierCourses, 0, SEEK_END);
-                nbrCourses=ftell(fichierCourses) / sizeof(Courses);
-
-            course=malloc(nbrCourses*(sizeof(Courses)));
-
-            fseek(fichierCourses, 0, SEEK_SET);
-                for (i=0; i<nbrCourses; i++){
-                    fread(&course[i],sizeof(Courses),1,fichierCourses);
-                }
-            fclose(fichierCourses);
-        }
+        course=lectureFichierCourses(&nbrCourses);
     }
 
 
     switch (choixMenuCourse){
         case 1:
-            ajouterCourses(voiture, &nbrVoitures);
+            ajouterCourses(voiture, &nbrVoitures, pilote, &nbrPilotes);
             break;
         case 2:
-            afficherCourses(course, &nbrCourses);
+            afficherCourses(course, &nbrCourses, pilote, &nbrPilotes);
             break;
         case 3:
-            rechercherCourses(course, &nbrCourses);
+            rechercherCourses(course, &nbrCourses, pilote, &nbrPilotes);
             break;
         case 4:
-            modifierCourses(course, &nbrCourses, voiture, &nbrVoitures);
+            modifierCourses(course, &nbrCourses, voiture, &nbrVoitures, pilote, &nbrPilotes);
             break;
         default:
             break;
@@ -424,4 +307,5 @@ void menuCourse(){
 
 
     free(course);
+    if(choixMenuCourse!=6) reAfficherMenuPrincipal();
 }

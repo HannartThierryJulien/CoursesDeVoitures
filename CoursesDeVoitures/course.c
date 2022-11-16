@@ -1,11 +1,11 @@
 #include "course.h"
 
 
-FILE * fichierCourses = NULL;
+FILE * fichierCourses;
 
 
 
-void ajouterCourses(Voitures *pt_voiture, int *pt_nbrVoitures){
+void ajouterCourses(Voitures *pt_voiture, int *pt_nbrVoitures, Pilotes *pt_pilote, int *pt_nbrPilotes){
 
     system("cls");
     printf("\n\n");
@@ -23,7 +23,7 @@ void ajouterCourses(Voitures *pt_voiture, int *pt_nbrVoitures){
         fflush(stdin);
         scanf("%d", &choix);
         if(choix){
-           afficherVoitures(pt_voiture, pt_nbrVoitures);
+           afficherVoitures(pt_voiture, pt_nbrVoitures, pt_pilote, pt_nbrPilotes);
         }
         printf("------------------------------------------------\n");
 
@@ -43,13 +43,13 @@ void ajouterCourses(Voitures *pt_voiture, int *pt_nbrVoitures){
                 scanf("%s", course[i].nomCircuit);
 
                 do{
-                    printf("\nCombien de voitures participeront a la courses (min. 2 - max. 10) ? ");
+                    printf("Combien de voitures participeront a la courses (min. 2 - max. 10) ? ");
                     fflush(stdin);
                     scanf("%d", &course[i].nbrVoituresParticipant);
                 }while (course[i].nbrVoituresParticipant < 2 || course[i].nbrVoituresParticipant > 10);
 
                 for(j=0; j<course[i].nbrVoituresParticipant; j++){
-                    printf("\n   Numero de la voiture : ");
+                    printf("   Numero de la voiture : ");
                     fflush(stdin);
                     scanf("%d", &numeroVoiture);
                     for (k=0; k<*pt_nbrVoitures; k++){
@@ -80,35 +80,39 @@ void ajouterCourses(Voitures *pt_voiture, int *pt_nbrVoitures){
 
 
 
-void afficherCourses(Courses *pt_course, int *pt_nbrCourses){
+void afficherCourses(Courses *pt_course, int *pt_nbrCourses, Pilotes *pt_pilote, int *pt_nbrPilotes){
 
     system("cls");
     printf("\n\n");
 
-    int i, j, k;
+    int i, j, k, l;
 
     printf("Nombre de courses : %d\n\n", *pt_nbrCourses);
 
     for (i=0; i<*pt_nbrCourses; i++){
-        printf("\nNom : %s \n", pt_course[i].nomCircuit);
+        printf("Nom : %s \n", pt_course[i].nomCircuit);
 
-        printf("\nVoitures participant :");
+        printf("Voitures participants :\n");
         for (j=0; j<pt_course[i].nbrVoituresParticipant; j++){
-            printf("\n   Numero : %d\n", pt_course[i].voitureParticipant[j].numero);
-            printf("   Marque : %s\n", pt_course[i].voitureParticipant[j].marque);
-            printf("   Puissance : %d\n", pt_course[i].voitureParticipant[j].puissance);
+            printf("  Numero voiture : %d\n", pt_course[i].voitureParticipant[j].numero);
+            printf("    Marque : %s\n", pt_course[i].voitureParticipant[j].marque);
+            printf("    Puissance : %d\n", pt_course[i].voitureParticipant[j].puissance);
             for (k=0; k<2; k++){
-                printf("   Pilote %d : %s %s\n", k+1, pt_course[i].voitureParticipant[j].pilote[k].nom, pt_course[i].voitureParticipant[j].pilote[k].prenom);
+                for (l=0; l<*pt_nbrPilotes; l++){
+                    if(pt_course[i].voitureParticipant[j].pilote[k]==pt_pilote[l].nn){
+                        printf("    Pilote %d : %s %s\n", k+1, pt_pilote[l].nom, pt_pilote[l].prenom);
+                    }
+                }
             }
         }
 
-        printf("\nDate : %d/%d/%d\n\n\n", pt_course[i].dateCourse.jour, pt_course[i].dateCourse.mois, pt_course[i].dateCourse.annee);
+        printf("Date : %d/%d/%d\n\n\n", pt_course[i].dateCourse.jour, pt_course[i].dateCourse.mois, pt_course[i].dateCourse.annee);
     }
 }
 
 
 
-void rechercherCourses(Courses *pt_course, int *pt_nbrCourses){
+void rechercherCourses(Courses *pt_course, int *pt_nbrCourses, Pilotes *pt_pilote, int *pt_nbrPilotes){
 
     system("cls");
     printf("\n\n");
@@ -167,7 +171,7 @@ void rechercherCourses(Courses *pt_course, int *pt_nbrCourses){
     }
 
     if(resultatRecherche!=0){
-        afficherCourses(pt_course, pt_nbrCourses);
+        afficherCourses(pt_course, pt_nbrCourses, pt_pilote, pt_nbrPilotes);
     }
     else{
         printf("\nAucune course correspondante n a ete trouvee.\n");
@@ -176,7 +180,7 @@ void rechercherCourses(Courses *pt_course, int *pt_nbrCourses){
 
 
 
-void modifierCourses(Courses *pt_course, int *pt_nbrCourses, Voitures *pt_voiture, int *pt_nbrVoitures){
+void modifierCourses(Courses *pt_course, int *pt_nbrCourses, Voitures *pt_voiture, int *pt_nbrVoitures, Pilotes *pt_pilote, int *pt_nbrPilotes){
 
     system("cls");
     printf("\n\n");
@@ -189,7 +193,7 @@ void modifierCourses(Courses *pt_course, int *pt_nbrCourses, Voitures *pt_voitur
     fflush(stdin);
     scanf("%d", &choix);
     if(choix){
-        afficherCourses(pt_course, pt_nbrCourses);
+        afficherCourses(pt_course, pt_nbrCourses, pt_pilote, pt_nbrPilotes);
     }
     printf("------------------------------------------------\n");
 

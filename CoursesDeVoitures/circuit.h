@@ -3,17 +3,9 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include "voiture.h"
 #endif
 
-
-#define FICBINAIRECIRCUITS "Fichiers_binaires\\Circuits.bin"
-
-
-typedef struct Circuits{
-    char nom[25];
-    char pays[20];
-    float longueur; //exprimee en Km avec une precision au metre pres
-}Circuits;
 
 
 void ajouterCircuits();

@@ -7,20 +7,10 @@
 #endif
 
 
-#define FICBINAIREVOITURES "Fichiers_binaires\\Voitures.bin"
-
-
-typedef struct Voitures{
-    int numero;
-    char marque[15];
-    int puissance; //exprimee en CV
-    Pilotes pilote[2];
-}Voitures;
-
 
 void ajouterVoitures(Pilotes *, int *);
-void afficherVoitures(Voitures *, int *);
+void afficherVoitures(Voitures *, int *, Pilotes *, int *);
 void trierVoitures(Voitures *, int *);
 void echangerVoitures(Voitures *, Voitures *);
-void rechercherVoitures(Voitures *, int *);
+void rechercherVoitures(Voitures *, int *, Pilotes *, int *);
 void modifierVoitures(Voitures *, int *, Pilotes *, int *);
